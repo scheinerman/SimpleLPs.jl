@@ -3,7 +3,8 @@ module SimpleLPs
 using ChooseOptimizer
 using JuMP
 
-export LP, solve
+import Base: show
+export LP, solve, show
 
 """
  LP(A, b, c; objective=:min, relation=:geq, nonneg=true, verbose=false)
@@ -18,9 +19,8 @@ struct LP
     objective::Symbol     # one of :max or :min
     relation::Symbol      # one of :leq :eq or :geq
     nonneg::Bool          # if true, variables are nonnegative
-    verbose::Bool         # pass on to solver
 
-    function LP(A, b, c; objective=:min, relation=:geq, nonneg=true, verbose=false)
+    function LP(A, b, c; objective=:min, relation=:geq, nonneg=true)
         if !_size_check(A, b, c)
             error("Size mismatch")
         end
@@ -33,7 +33,7 @@ struct LP
             error("Unknown relation $relation. Use :leq, :eq, or :geq")
         end
 
-        new(A, b, c, objective, relation, nonneg, verbose)
+        new(A, b, c, objective, relation, nonneg)
     end
 end
 
@@ -59,5 +59,6 @@ function _relation_check(r::Symbol)::Bool
 end
 
 include("solver.jl")
+include("show.jl")
 
 end # module SimpleLPs

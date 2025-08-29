@@ -1,5 +1,5 @@
 """
-    solve(P::LP)
+    solve(P::LP, verbose::Bool=false)
 
 Solve a linear program `P` returning the pair `(z, x)`
 where `z` is the optimum value and `x` is the optimal vector.
@@ -7,7 +7,8 @@ where `z` is the optimum value and `x` is the optimal vector.
 If `P` is either unbounded or infeasible, that will be reported as an 
 information message and `nothing` will be returned. 
 """
-function solve(P::LP)
+function solve(P::LP, verbose::Bool=false)
+    set_solver_verbose(verbose)
     MOD = Model(get_solver())
 
     nv = nvars(P)
@@ -36,8 +37,6 @@ function solve(P::LP)
             @constraint(MOD, sum(P.A[i, j] * x[j] for j in 1:(nv)) == P.b[i])
         end
     end
-
-    set_solver_verbose(P.verbose)
 
     optimize!(MOD)
     status = Int(termination_status(MOD))
