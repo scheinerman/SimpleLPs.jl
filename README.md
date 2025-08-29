@@ -18,7 +18,7 @@ The mandatory arguments are:
 The optional arguments (which must be named are):
 * `objective` (Symbol): must be one of the symbols `:min` (default) or `:max`.
 * `relation` (Symbol): must be one of `:geq` (default), `:eq`, or `:leq`.
-* `nonneg` (Bool): must be one of `true` (default) or `false`. 
+* `nonneg` (Bool): must be one of `true` (default) or `false`. When this is `false`, the variables are not bounded (may be negative).
 
 For example, `LP(A, b, c, objective=:max, relation=:leq)` creates a linear program of the form $\max c^Tx$ subject to $Ax \le  b$, $x \ge 0$. 
 
@@ -28,7 +28,7 @@ The `solve` function returns a pair `(z, x)` where `z` is the optimal value and 
 
 If the linear program is either unbounded or infeasible, an information message is printed and `nothing` is returned. 
 
-## Example
+## Examples
 
 ```
 julia> using SimpleLPs
@@ -62,6 +62,32 @@ julia> A*x
 
 julia> c'*x
 1.8647430117222723
+
+julia> A = rand(10:20,4,4);
+
+julia> b = rand(10:20,4);
+
+julia> c = rand(-10:-6,4);
+
+julia> P = LP(A,b,c)
+Linear Program with 4 variables and 4 constraints
+min c'*x s.t. Ax ≥ b, x ≥ 0
+
+julia> solve(P)
+[ Info: This linear program is unbounded
+
+julia> A = rand(10:20,4,4);
+
+julia> b = rand(10:20,4);
+
+julia> c = rand(5:12,4);
+
+julia> P = LP(A,b,-c,relation=:eq)
+Linear Program with 4 variables and 4 constraints
+min c'*x s.t. Ax = b, x ≥ 0
+
+julia> solve(P)
+[ Info: This linear program is infeasible.
 ```
 
 ## Comments
