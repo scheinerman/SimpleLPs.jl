@@ -1,2 +1,72 @@
-# SimpleLPs.jl
-Bare bones interface for solving linear programs
+# SimpleLPs
+
+This is an extremely basic package for solving linear programs. It's purpose is to simplify 
+solving LPs given by a matrix and two vectors. There are only two functions:
+* `LP` to set up a linear program.
+* `solve` to solve it. 
+
+
+## Creating Linear Programs
+
+The function to create linear programs is `LP`. It takes three mandatory arguments followed by three named optional arguments arguments. 
+
+The mandatory arguments are:
+* `A`: an $m\times n$-matrix,
+* `b`: an $n$-vector, and
+* `c`: an $m$-vector. 
+
+The optional arguments (which must be named are):
+* `objective` (Symbol): must be one of the symbols `:min` (default) or `:max`.
+* `relation` (Symbol): must be one of `:geq` (default), `:eq`, or `:leq`.
+* `nonneg` (Bool): must be one of `true` (default) or `false`. 
+
+For example, `LP(A, b, c, objective=:max, relation=:leq)` creates a linear program of the form $\max c^Tx$ subject to $Ax \le  b$, $x \ge 0$. 
+
+## Solving Linear Programs
+
+The `solve` function returns a pair `(z, x)` where `z` is the optimal value and `x` is the optimal vector. The `solve` function takes an optional second, Boolean, argument which, if set to `true` gives verbose output during the solving process.
+
+If the linear program is either unbounded or infeasible, an information message is printed and `nothing` is returned. 
+
+## Example
+
+```
+julia> using SimpleLPs
+
+julia> A = rand(1:10,4,7);
+
+julia> b = rand(3:8,4);
+
+julia> c = rand(2:9,7);
+
+julia> P = LP(A,b,c)
+Linear Program with 7 variables and 4 constraints
+min c'*x s.t. Ax ≥ b, x ≥ 0
+
+julia> solve(P)
+(1.6, [0.0, 0.0, 0.0, 0.0, 0.8, 0.0, 0.0])
+
+julia> P = LP(A,b,c,relation=:eq)
+Linear Program with 7 variables and 4 constraints
+min c'*x s.t. Ax = b, x ≥ 0
+
+julia> (v,x)=solve(P)
+(1.8647430117222725, [0.005410279531109108, 0.0, 0.0, 0.02164111812443643, 0.7069431920649234, 0.0, 0.03426510369702434])
+
+julia> A*x
+4-element Vector{Float64}:
+ 4.0
+ 6.0
+ 4.0
+ 6.000000000000001
+
+julia> c'*x
+1.8647430117222723
+```
+
+## Comments
+
+* The `LP` datastructure is immutable. To make changes, such as from minimization to maximization, just create a new `LP`. 
+* The `solve` function's work is done by the [HiGHS](https://github.com/jump-dev/HiGHS.jl) solver. This can be changed using the [ChooseOptimizer](https://github.com/scheinerman/ChooseOptimizer.jl) module. 
+* To do anything more interesting, use [JuMP](https://jump.dev/JuMP.jl/stable/) instead of this.
+* I have no plans to register this. 
