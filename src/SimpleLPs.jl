@@ -1,10 +1,12 @@
 module SimpleLPs
 
 using ChooseOptimizer
+using LatexPrint
 using JuMP
 
 import Base: show
-export LP, dual, solve, show
+import LatexPrint: latex_form
+export LP, dual, random_Abc, solve, show
 
 """
  LP(A, b, c; objective=:min, relation=:geq, nonneg=true, verbose=false)
@@ -61,5 +63,13 @@ end
 include("solver.jl")
 include("show.jl")
 include("dual.jl")
+include("lap.jl")
+
+function random_Abc(m::Int, n::Int, lo::Int, hi::Int)
+    A = rand(lo:hi, m, n)
+    b = rand(lo:hi, m)
+    c = rand(lo:hi, n)
+    return A, b, c
+end
 
 end # module SimpleLPs

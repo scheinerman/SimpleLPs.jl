@@ -24,7 +24,8 @@ For example, `LP(A, b, c, objective=:max, relation=:leq)` creates a linear progr
 
 ## Solving Linear Programs
 
-The `solve` function returns a pair `(z, x)` where `z` is the optimal value and `x` is the optimal vector. The `solve` function takes an optional second, Boolean, argument which, if set to `true` gives verbose output during the solving process.
+The `solve` function returns a pair `(z, x)` where `z` is the optimal value and `x` is the optimal vector. T
+he `solve` function takes an optional second, Boolean, argument which, if set to `true` gives verbose output during the solving process.
 
 If the linear program is either unbounded or infeasible, an information message is printed and `nothing` is returned. 
 
@@ -88,6 +89,64 @@ min c'*x s.t. Ax = b, x ≥ 0
 
 julia> solve(P)
 [ Info: This linear program is infeasible.
+```
+
+## Random Data
+
+Use `random_Abc(m,n,lo,hi)` to create matrix $A$ and vectors $b$ and $c$ with integer entries 
+between `lo` and `hi` (inclusive). Here $A$ is an $m\times n$ matrix, and the vectors are sized appropriately. 
+
+## LaTeX Form
+
+```
+julia> A,b,c= random_Abc(3,5,1,8);
+
+julia> P = LP(A, b, c, objective=:max, relation=:eq)
+Linear Program with 5 variables and 3 constraints
+max c'*x s.t. Ax = b, x ≥ 0
+
+julia> solve(P)
+(1.666666666666666, [0.48484848484848503, 0.0, 0.0606060606060605, 0.6969696969696969, 0.0])
+
+julia> lap(P)
+\max\left[
+\begin{array}{r}
+1 \\
+3 \\
+8 \\
+1 \\
+7 \\
+\end{array}
+\right]^T\mathbf{x}
+\quad\text{s.t.}\quad\left[
+\begin{array}{rrrrr}
+4 & 4 & 6 & 1 & 6 \\
+6 & 3 & 5 & 4 & 4 \\
+4 & 5 & 8 & 8 & 7 \\
+\end{array}
+\right]\mathbf{x}=\left[
+\begin{array}{r}
+3 \\
+6 \\
+8 \\
+\end{array}
+\right],\ \mathbf{x}\ge \mathbf{0}
+```
+![](LP.png)
+
+
+## Dual
+
+The `dual` function works, but only sort-of. Need some love. 
+
+```
+julia> P
+Linear Program with 5 variables and 3 constraints
+max c'*x s.t. Ax = b, x ≥ 0
+
+julia> dual(P)
+Linear Program with 3 variables and 5 constraints
+min c'*x s.t. Ax ≥ b, x unconstrained
 ```
 
 ## Comments
