@@ -137,7 +137,7 @@ julia> lap(P)
 
 ## Dual
 
-The `dual` function works, but only sort-of. Need some love. 
+The `dual` function works, but only sort-of. Needs a lot of love. 
 
 ```
 julia> P
