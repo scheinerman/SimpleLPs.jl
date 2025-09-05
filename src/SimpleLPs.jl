@@ -4,7 +4,7 @@ using ChooseOptimizer
 using JuMP
 
 import Base: show
-export LP, solve, show
+export LP, dual, solve, show
 
 """
  LP(A, b, c; objective=:min, relation=:geq, nonneg=true, verbose=false)
