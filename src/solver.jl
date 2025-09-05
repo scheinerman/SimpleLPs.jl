@@ -48,7 +48,7 @@ function solve(P::LP, verbose::Bool=false)
     end
 
     if status == 2
-        @info "This linear program is infeasible."
+        @info "This linear program is infeasible"
         return nothing
     end
 

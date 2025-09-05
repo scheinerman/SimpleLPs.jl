@@ -60,5 +60,6 @@ end
 
 include("solver.jl")
 include("show.jl")
+include("dual.jl")
 
 end # module SimpleLPs
