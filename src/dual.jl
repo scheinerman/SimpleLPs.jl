@@ -1,5 +1,5 @@
 """
-    dual(P::LP)
+	dual(P::LP)
 
 Create the dual linear program to `P`.
 """
@@ -18,16 +18,23 @@ function dual(P::LP)
         nonneg = false
     end
 
-    # swap ≤ with ≥
-    rel = P.relation == :leq ? :geq : :leq
+    rel = :eq
 
     if P.relation == :eq
-        if obj == :max
-            rel = :leq
-        else
+        if P.objective == :max
             rel = :geq
+        else
+            rel = :leq
         end
+    else
+        rel = P.relation == :leq ? :geq : :leq
+    end
+
+    if !P.nonneg
+        rel = :eq
     end
 
     return LP(AA, bb, cc; objective=obj, relation=rel, nonneg=nonneg)
 end
+
+Base.adjoint(P::LP) = dual(P)

@@ -4,14 +4,17 @@ using ChooseOptimizer
 using LatexPrint
 using JuMP
 
-import Base: show
+import Base: adjoint, show
 import LatexPrint: latex_form
 export LP, dual, random_Abc, solve, show
 
 """
  LP(A, b, c; objective=:min, relation=:geq, nonneg=true, verbose=false)
 
- Create a linear program.
+ Create a linear program. For the named arguments:
+ * `objective` must be one of `:min` or `:max` [default: `:min`]
+ * `nonneg` must be either `true` or `false` [default: `true`]
+ * `relation` must be one of `:leq`, `:eq`, or `:geq` [default: `:geq`]
  """
 struct LP
     A::AbstractMatrix
@@ -22,7 +25,7 @@ struct LP
     relation::Symbol      # one of :leq :eq or :geq
     nonneg::Bool          # if true, variables are nonnegative
 
-    function LP(A, b, c; objective=:min, relation=:geq, nonneg=true)
+    function LP(A, b, c; objective::Symbol=:min, relation::Symbol=:geq, nonneg::Bool=true)
         if !_size_check(A, b, c)
             error("Size mismatch")
         end
